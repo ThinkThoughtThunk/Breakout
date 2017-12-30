@@ -8,16 +8,34 @@ init()
 gameLoop()
 
 function gameLoop(currentTime) {
-  if (lastTime) {
+  if (lastTime)
     update((currentTime - lastTime) / 1000)
-  }
   lastTime = currentTime
   
   render()
   
-  isGameOver()
-    ? gameOverSound.play()
-    : requestAnimationFrame(gameLoop)
+  if (isGameOver())
+    return handleGameOver()
+    
+  if (playerWon())
+    return handleVictory()
+  requestAnimationFrame(gameLoop)
+}
+
+function handleGameOver() {
+  gameOverSound.play()
+}
+
+function handleVictory() {
+  drawVictoryText()
+}
+
+function playerWon() {
+  for (let i = 0; i < bricks.length; i++) {
+    if (!bricks[i].destroyed())
+      return false
+  }
+  return true
 }
 
 function isGameOver() {

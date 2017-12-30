@@ -23,6 +23,26 @@ function drawBall()
              ball.color())
 }
 
+function drawVictoryText() {
+
+  let alpha = 0,
+      interval = setInterval( () => {
+    ctx.fillStyle = 'rgba(250, 250, 250, ' + alpha + ')'
+    ctx.font = '26px sans-serif'
+    ctx.textAlign = 'center'
+    ctx.fillText(`You\'re the best. Never change.`, 
+                 canvas.width / 2, 
+                 canvas.height / 2)
+    ctx.fillText(`Score: ${totalScore}`,
+                  canvas.width / 2, 
+                  canvas.height / 2 + 50)
+    alpha += .05
+    if (alpha > .4) {
+      clearInterval(interval)
+    }
+  }, 50)
+}
+
 function drawPaddle() 
 {
   drawRect(paddle.topLeft().x,

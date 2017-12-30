@@ -22,7 +22,7 @@ function keyDownHandler(e) {
   
   if (e.keyCode === 32)
   {
-    releaseBall()
+    
   }
 }
 
@@ -44,7 +44,9 @@ function mouseMoveHandler(e) {
 }
 
 function clickHandler(e) {
-  window.location.reload()
+  playing
+    ? window.location.reload()
+    : releaseBall()
 }
 
 function releaseBall()

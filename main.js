@@ -271,9 +271,7 @@ function keyDownHandler(e) {
     isRightPressed = true;
   }
 
-  if (e.keyCode === 32) {
-    releaseBall();
-  }
+  if (e.keyCode === 32) {}
 }
 
 function keyUpHandler(e) {
@@ -293,7 +291,7 @@ function mouseMoveHandler(e) {
 }
 
 function clickHandler(e) {
-  window.location.reload();
+  playing ? window.location.reload() : releaseBall();
 }
 
 function releaseBall() {
@@ -319,6 +317,22 @@ function clearCanvas() {
 
 function drawBall() {
   drawCircle(ball.position().x, ball.position().y, ball.radius(), ball.color());
+}
+
+function drawVictoryText() {
+
+  var alpha = 0,
+      interval = setInterval(function () {
+    ctx.fillStyle = 'rgba(250, 250, 250, ' + alpha + ')';
+    ctx.font = '26px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('You\'re the best. Never change.', canvas.width / 2, canvas.height / 2);
+    ctx.fillText('Score: ' + totalScore, canvas.width / 2, canvas.height / 2 + 50);
+    alpha += .05;
+    if (alpha > .4) {
+      clearInterval(interval);
+    }
+  }, 50);
 }
 
 function drawPaddle() {
@@ -657,14 +671,30 @@ init();
 gameLoop();
 
 function gameLoop(currentTime) {
-  if (lastTime) {
-    update((currentTime - lastTime) / 1000);
-  }
+  if (lastTime) update((currentTime - lastTime) / 1000);
   lastTime = currentTime;
 
   render();
 
-  isGameOver() ? gameOverSound.play() : requestAnimationFrame(gameLoop);
+  if (isGameOver()) return handleGameOver();
+
+  if (playerWon()) return handleVictory();
+  requestAnimationFrame(gameLoop);
+}
+
+function handleGameOver() {
+  gameOverSound.play();
+}
+
+function handleVictory() {
+  drawVictoryText();
+}
+
+function playerWon() {
+  for (var i = 0; i < bricks.length; i++) {
+    if (!bricks[i].destroyed()) return false;
+  }
+  return true;
 }
 
 function isGameOver() {
